@@ -34,13 +34,18 @@ public:
 
         xVel = 0;  // Reset horizontal velocity before checking input
 
-        // Check for horizontal movement
-        if (state[SDL_SCANCODE_RIGHT] || state[SDL_SCANCODE_D]) {
+        // Check if both left and right inputs are being pressed
+        bool movingRight = state[SDL_SCANCODE_RIGHT] || state[SDL_SCANCODE_D];
+        bool movingLeft = state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_A];
+
+        // Only apply movement if one direction is pressed, not both
+        if (movingRight && !movingLeft) {
             xVel = speed;
         } 
-        if (state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_A]) {
+        else if (movingLeft && !movingRight) {
             xVel = -speed;
         }
+        // If both are pressed, xVel remains 0
 
         // Handle jumping
         if (onGround && (state[SDL_SCANCODE_SPACE] || state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP])) {
@@ -49,20 +54,21 @@ public:
             onGround = false;
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_SPACE] && onGround)
-        {   
-            xVel = speed;
-            yVel = -jumpHeight;
-            isJumping = true;
-            onGround = false;
-        }
+        // Handle diagonal jumps only if we're not pressing both left and right
+        if (!movingLeft || !movingRight) {
+            if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_SPACE] && onGround) {   
+                xVel = speed;
+                yVel = -jumpHeight;
+                isJumping = true;
+                onGround = false;
+            }
 
-        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_SPACE] && onGround)
-        {   
-            xVel = -speed;
-            yVel = -jumpHeight;
-            isJumping = true;
-            onGround = false;
+            if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_SPACE] && onGround) {   
+                xVel = -speed;
+                yVel = -jumpHeight;
+                isJumping = true;
+                onGround = false;
+            }
         }
     }
 

@@ -193,4 +193,5 @@ bool handleFinishCollision(Player& player, FinishBlock& FinishBlock) {
             return true;
         }
     }
+    return false;
 }
